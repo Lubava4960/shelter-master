@@ -13,20 +13,22 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Cat_table ")
-public class Cat{
+public class Cat {
 
     @jakarta.persistence.Id
     @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private long id;
-        @Column(name= "name_cat", nullable = false)
-        private String name;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(name = "name_cat", nullable = false)
+    private String name;
 
-        @Column( nullable = false)
-        private  int age;
+    @Column(nullable = false)
+    private int age;
 
-        @Column(nullable = false)
-        private String color;
+    @Column(nullable = false)
+    private String color;
+    @Column(name = "image_path")
+    private byte[] image;
 
     public void setId(Long id) {
         this.id = id;
@@ -37,5 +39,4 @@ public class Cat{
     }
 
 
-    // этот класс нужно сделать сущностью животного, добавить поля, аннотации и сеттеры и геттеры
 }
