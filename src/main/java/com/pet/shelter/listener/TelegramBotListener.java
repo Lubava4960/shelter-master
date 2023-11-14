@@ -2,14 +2,21 @@ package com.pet.shelter.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -49,7 +56,9 @@ public class TelegramBotListener implements UpdatesListener {
                     buttonText.callbackData("Наш Лесной приют");
                     InlineKeyboardButton buttonAddress = new InlineKeyboardButton("Наш адрес");
                     buttonAddress.callbackData("Наш адрес");
-                    Keyboard keyboard = new InlineKeyboardMarkup(buttonText, buttonAddress);
+                    InlineKeyboardButton buttonText1 = new InlineKeyboardButton("Наши питомцы");
+                    buttonText1.callbackData("Наши питомцы");
+                    Keyboard keyboard = new InlineKeyboardMarkup(buttonText, buttonAddress,buttonText1);
                     sendMessage.replyMarkup(keyboard);
                     telegramBot.execute(sendMessage);
                 }
@@ -58,7 +67,7 @@ public class TelegramBotListener implements UpdatesListener {
                 var data = update.callbackQuery().data();
                 var massageId = update.callbackQuery().message().messageId();
                 sendMessage(update.callbackQuery().message().chat().id(), "Наш Лесной приют ");
-                // update.callbackQuery().message().chat().id();
+
                 if (data.equals("Наш Лесной приют")) {
                     // ответ на кнопку "Наш лесной приют"
 
@@ -68,12 +77,52 @@ public class TelegramBotListener implements UpdatesListener {
 
                 } else if (data.equals("Наш адрес")) {
                     // ответ на кнопку "Наш адрес"
-                    SendMessage sendMessage = new SendMessage(chatId, "Московская область, городской округ Истра, деревня Бодрово");
+                    SendMessage sendMessage = new SendMessage(chatId, "Московская область, городской округ Истра, деревня Бодрово. Вы можете связаться с нами по телефону 8926-926-03-33");
                     telegramBot.execute(sendMessage);
-                } else {
+                }else if (data.equals("Наши питомцы")){
+                    try{
+                        byte[]photo= Files.readAllBytes(
+                                Paths.get(TelegramBotListener.class.getResource("/photo 1.jpg").toURI())
+                        );
+                        SendPhoto sendPhoto=new SendPhoto(chatId,photo);
+                        sendPhoto.caption("Это кошка Люся");
+                        telegramBot.execute(sendPhoto);
+                    }catch (IOException| URISyntaxException e){
+                        throw new RuntimeException(e);
+                    }try {
+                        byte[]photo= Files.readAllBytes(
+                                Paths.get(TelegramBotListener.class.getResource("/photo 3.jpg").toURI())
+                        );
+                        SendPhoto sendPhoto=new SendPhoto(chatId,photo);
+                        sendPhoto.caption("Это котенок Бася");
+                        telegramBot.execute(sendPhoto);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }try {
+                        byte[]photo= Files.readAllBytes(
+                                Paths.get(TelegramBotListener.class.getResource("/photo 06.jpg").toURI())
+                        );
+                        SendPhoto sendPhoto=new SendPhoto(chatId,photo);
+                        sendPhoto.caption("Это кошка Нюся");
+                        telegramBot.execute(sendPhoto);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                    //бд
+                }
+                else {
                     sendMessage(chatId, "Некорректный формат сообщения");
                 }
             }
+
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }

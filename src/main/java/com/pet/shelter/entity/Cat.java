@@ -27,8 +27,9 @@ public class Cat {
 
     @Column(nullable = false)
     private String color;
-    @Column(name = "image_path")
+      @Column(name="image_path")
     private byte[] image;
+
 
     public void setId(Long id) {
         this.id = id;
