@@ -54,11 +54,13 @@ public class TelegramBotListener implements UpdatesListener {
 
                     InlineKeyboardButton buttonText = new InlineKeyboardButton("Наш Лесной приют");
                     buttonText.callbackData("Наш Лесной приют");
-                    InlineKeyboardButton buttonAddress = new InlineKeyboardButton("Наш адрес");
-                    buttonAddress.callbackData("Наш адрес");
+                    InlineKeyboardButton buttonAddress = new InlineKeyboardButton("Как взять животное из приюта");
+                    buttonAddress.callbackData("Как взять животное из приюта");
                     InlineKeyboardButton buttonText1 = new InlineKeyboardButton("Наши питомцы");
                     buttonText1.callbackData("Наши питомцы");
-                    Keyboard keyboard = new InlineKeyboardMarkup(buttonText, buttonAddress,buttonText1);
+                    InlineKeyboardButton buttonText2 = new InlineKeyboardButton("Прислать отчёт");
+                    buttonText2.callbackData("Прислать отчёт");
+                    Keyboard keyboard = new InlineKeyboardMarkup(buttonText, buttonAddress,buttonText1,buttonText2);
                     sendMessage.replyMarkup(keyboard);
                     telegramBot.execute(sendMessage);
                 }
@@ -71,13 +73,17 @@ public class TelegramBotListener implements UpdatesListener {
                 if (data.equals("Наш Лесной приют")) {
                     // ответ на кнопку "Наш лесной приют"
 
-                    SendMessage sendMessage = new SendMessage(chatId, " В нашем приюте живут кошки , которые скучают и ждут своих хозяев ");
+                    SendMessage sendMessage = new SendMessage(chatId, " В нашем приюте живут кошки , " +
+                            "которые скучают и ждут своих хозяев. Наш адрес:Московская область, " +
+                            "городской округ Истра, деревня Бодрово. Вы можете связаться с " +
+                            "нами по телефону 8926-926-03-33 ");
 
                     telegramBot.execute(sendMessage);
 
-                } else if (data.equals("Наш адрес")) {
-                    // ответ на кнопку "Наш адрес"
-                    SendMessage sendMessage = new SendMessage(chatId, "Московская область, городской округ Истра, деревня Бодрово. Вы можете связаться с нами по телефону 8926-926-03-33");
+                } else if (data.equals("Как взять животное из приюта")) {
+                    // ответ на кнопку "Как взять животное из приюта"
+                    SendMessage sendMessage = new SendMessage(chatId, "Необходимо познакомиться с животным, время с 10-12 утра ежедневно. " +
+                            "После того как животное останется дома, неободимо прислать отчет с фото питомца.");
                     telegramBot.execute(sendMessage);
                 }else if (data.equals("Наши питомцы")){
                     try{
