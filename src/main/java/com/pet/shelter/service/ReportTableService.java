@@ -1,6 +1,7 @@
 package com.pet.shelter.service;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.pengrad.telegrambot.model.Chat;
 import com.pet.shelter.entity.ReportTable;
 import com.pet.shelter.repository.ReportTableRepository;
 import org.springframework.data.annotation.Id;
@@ -20,9 +21,8 @@ public class ReportTableService {
 
     reportTableRepository.save(reportTable);
   }
- // public byte[] getImage(long id) {
-  //  ReportTable reportTable = reportTableRepository.findById(id).orElseThrow();
-  //  return reportTable.getImage();
- // }
-
+  public byte[] getImage(int id) {
+    ReportTable reportTable= (ReportTable) reportTableRepository.findAllByChatId( id);
+    return reportTable.getImage();
+  }
 }
