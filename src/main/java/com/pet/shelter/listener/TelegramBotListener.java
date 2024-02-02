@@ -7,12 +7,16 @@ import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pet.shelter.entity.ReportTable;
 import com.pet.shelter.service.ReportTableService;
 import jakarta.annotation.PostConstruct;
+import org.aspectj.bridge.IMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,7 +36,7 @@ public class TelegramBotListener implements UpdatesListener {
     private final TelegramBot telegramBot;
     private final ReportTableService reportTableService;
     private final Pattern pattern=Pattern.compile("(([А-я\\d\\s.,!?:]+))");
-    private Object image;
+    //private Object image;
 
 
     public TelegramBotListener(TelegramBot telegramBot, ReportTableService reportTableService) {
@@ -65,7 +69,25 @@ public class TelegramBotListener implements UpdatesListener {
                     Keyboard keyboard = new InlineKeyboardMarkup(buttonText, buttonAddress);
                     sendMessage.replyMarkup(keyboard);
                     telegramBot.execute(sendMessage);
+
+                }else if(text !=null) {
+                    Matcher matcher = pattern.matcher(text);
+                    if (matcher.find()) {
+
+                        String txt =matcher.group(1);
+                        ReportTable reportTable=new ReportTable();
+                        reportTable.setChatId(chatId);
+                        reportTable.setMessage(txt);
+                        reportTable.setImage(reportTable.getImage());
+                        reportTableService.save(reportTable);
+                        sendMessage(chatId, "Отчёт получен!");
+
+
+                    }
+                }else {
+                    sendMessage(chatId, "Некорректный формат сообщения! ");
                 }
+
             } else if (update.callbackQuery() != null && update.callbackQuery().data() != null) {
                 var chatId = update.callbackQuery().message().chat().id();
                 var data = update.callbackQuery().data();
@@ -138,26 +160,10 @@ public class TelegramBotListener implements UpdatesListener {
                     SendMessage sendMessage = new SendMessage(chatId, "Просьба написать о настроении питомца и подкрепить фото");
                     telegramBot.execute(sendMessage);
 
-                } else if(data !=null) {
-                    Matcher matcher = pattern.matcher(data);
-                    if (matcher.find()) {
-
-                            String txt =matcher.group();
-                            ReportTable reportTable=new ReportTable();
-                            reportTable.setChatId(chatId);
-                            reportTable.setMessage(txt);
-                           // reportTable.setImage(byte[] image);
-                            reportTableService.save(reportTable);
-                            sendMessage(chatId, "Задача успешно запланирована!");
-                        }
-                    }else {
-                        sendMessage(chatId, "Некорректный формат сообщения! ");
-                    }
+                }
                 }
 
                 }
-
-
 
 
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -168,17 +174,8 @@ public class TelegramBotListener implements UpdatesListener {
         SendMessage sendMessage = new SendMessage(chatId, text);
         return text;
     }
-   // public byte[] getIdAsByte(UUID uuid)
-  //  {
-    //    ByteBuffer bb = ByteBuffer.wrap(new byte[8]);
-     //   bb.putLong(uuid.getMostSignificantBits());
-     //   bb.putLong(uuid.getLeastSignificantBits());
-     //   return bb.array();
-   // }
-    //public byte[] getImage(long id) {
-    // ReportTable reportTable = reportTableRepository.findById(id).orElseThrow();
-    // return reportTable.getImage();
-    //}
+
+
 
 
 }
