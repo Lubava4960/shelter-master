@@ -7,6 +7,6 @@ public interface CatRepository extends JpaRepository<Cat,Long> {
 
 
 
-  //  List<Cat> findAllCat( String cat);
+
 
     }
